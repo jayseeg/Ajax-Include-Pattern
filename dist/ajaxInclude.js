@@ -1,4 +1,4 @@
-/*! Ajax-Include - v0.1.2 - 2013-06-18
+/*! Ajax-Include - v0.1.2 - 2013-11-04
 * http://filamentgroup.com/lab/ajax_includes_modular_content/
 * Copyright (c) 2013 @scottjehl, Filament Group, Inc.; Licensed MIT */
 
@@ -31,7 +31,7 @@
 		else {
 			o = $.extend( o, options );
 		}
-		
+
 		// if it's a proxy, que the element and its url, if not, request immediately
 		function queueOrRequest( el ){
 			var url = el.data( "url" );
@@ -43,7 +43,7 @@
 				AI.makeReq( url, el );
 			}
 		}
-		
+
 		// if there's a url queue
 		function runQueue(){
 			if( urllist.length ){
@@ -52,7 +52,7 @@
 				urllist = [];
 			}
 		}
-		
+
 		// bind a listener to a currently-inapplicable media query for potential later changes
 		function bindForLater( el, media ){
 			var mm = win.matchMedia( media );
@@ -65,7 +65,7 @@
 				mm.addListener( cb );
 			}
 		}
-		
+
 		// loop through els, bind handlers
 		this.not( "[" + AI.boundAttr + "],[" + AI.interactionAttr + "]" ).each(function( k ) {
 			var el = $( this ),
@@ -112,9 +112,9 @@
 							content = subset[ 0 ];
 						}
 					}
-					
+
 					var filteredContent = el.triggerHandler( "ajaxIncludeFilter", [ content ] );
-					
+
 					if( filteredContent ){
 						content = filteredContent;
 					}
@@ -132,17 +132,18 @@
 			if ( isHijax ) {
 				AI.makeReq( url, el, true );
 			}
-			else if ( !media || ( win.matchMedia && win.matchMedia( media ).matches ) ) {
+			// threw in boilerplate browser detect to get around unsolved issue with media-query failing to match in spite of match media and add listener
+			else if ( !media || $('.lt-ie9').length || ( win.matchMedia && win.matchMedia( media ).matches ) ) {
 				queueOrRequest( el );
 			}
 			else if( media && win.matchMedia ){
 				bindForLater( el, media );
 			}
 		});
-		
+
 		// empty the queue for proxied requests
 		runQueue();
-		
+
 		// return elems
 		return this;
 	};
