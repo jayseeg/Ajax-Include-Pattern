@@ -1,3 +1,10 @@
+/*! Ajax-Include - v0.1.2 - 2013-06-18
+* http://filamentgroup.com/lab/ajax_includes_modular_content/
+* Copyright (c) 2013 @scottjehl, Filament Group, Inc.; Licensed MIT */
+/* Hacked by jayseeg to workaround match media failure
+   Repo available at git@github.com:jayseeg/Ajax-Include-Pattern.git
+*/
+
 (function( $, win, undefined ){
 
 	var AI = {
@@ -122,14 +129,19 @@
 						targetEl[ el.data( "method" ) ]( content );
 						el.trigger( "ajaxInclude", [ content ] );
 					}
+
+					// modified by jayseeg to let the rest of the app know content has been ajax included
+					// Repo available at git@github.com:jayseeg/Ajax-Include-Pattern.git
+
+					$(document).trigger('ajaxIncluded');
+
 				});
 
 			// When hijax, ignores matchMedia, proxies/queueing
 			if ( isHijax ) {
 				AI.makeReq( url, el, true );
 			}
-			// threw in boilerplate browser detect to get around unsolved issue with media-query failing to match in spite of match media and add listener
-			else if ( !media || $('.lt-ie9').length || ( win.matchMedia && win.matchMedia( media ).matches ) ) {
+			else if ( !media || ( win.matchMedia && win.matchMedia( media ).matches ) ) {
 				queueOrRequest( el );
 			}
 			else if( media && win.matchMedia ){
